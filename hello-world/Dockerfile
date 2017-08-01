@@ -14,4 +14,3 @@ WORKDIR /
 
 COPY --from=build /hello-server /hello-server
 CMD ["/hello-server"]
-LABEL org.mobyproject.config='{"pid": "host", "capabilities": ["all"]}'
