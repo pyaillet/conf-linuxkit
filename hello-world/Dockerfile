@@ -1,7 +1,5 @@
 FROM golang:1.8 AS build
 
-ENTRYPOINT []
-CMD []
 WORKDIR /
 
 COPY hello-world.go .
@@ -14,4 +12,4 @@ ENTRYPOINT []
 CMD []
 WORKDIR /
 
-COPY --from=build /hello-world /
+COPY --from=build /hello-world /var/tmp/hello-world

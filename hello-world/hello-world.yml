@@ -5,10 +5,9 @@ init:
   - linuxkit/init:4dcee04c04c900a5796dc719f8d16fea7e771059
   - linuxkit/runc:842318b6ab524783554428c89a27d95af7bd2844
   - linuxkit/containerd:1ff17c0908bed91a7bff252fba2e3d360d05a3de
-  - pyaillet/hello-world-go:latest
 services:
   - name: getty
-    image: linuxkit/getty:58620cff1b0bf8b5d144d087602115e996f18a02
+    image: getty:helloworld
     env:
      - INSECURE=true
 trust:
