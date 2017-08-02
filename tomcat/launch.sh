@@ -1,4 +1,4 @@
 #!/bin/sh
 
 moby build tomcat.yml
-linuxkit run tomcat
+sudo linuxkit run --networking=vmnet tomcat 

@@ -1,4 +1,4 @@
 #!/bin/sh
 
-rm -Rf tomcat-*
-kill -9 $(ps -ef | awk '/tomcat/{print $2}')
+sudo rm -Rf tomcat-*
+sudo kill -9 $(ps -ef | awk '/tomcat/{print $2}')
