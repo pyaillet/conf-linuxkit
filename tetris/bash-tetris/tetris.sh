@@ -491,6 +491,7 @@ cmd_quit() {
     pkill -SIGUSR2 -f "/bin/bash $0" # ... send SIGUSR2 to all script instances to stop forked processes ...
     xyprint $GAMEOVER_X $GAMEOVER_Y "Game over!"
     echo -e "$screen_buffer"                     # ... and print final message
+    halt
 }
 
 controller() {
