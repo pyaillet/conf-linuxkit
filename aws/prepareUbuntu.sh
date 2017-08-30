@@ -6,7 +6,9 @@ sudo apt-get install golang-go
 
 sudo apt-get install docker.io
 
-sudo usermod -aG docker
+sudo usermod -aG docker ubuntu
+newgrp docker
+newgrp ubuntu
 
 cd /home/ubuntu
 git clone http://github.com/linuxkit/linuxkit

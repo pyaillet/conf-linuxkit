@@ -2,4 +2,4 @@
 
 docker build -t pyaillet/hello-server .
 moby build hello-world.yml
-linuxkit run hello-world
+sudo linuxkit run -networking vmnet hello-world 

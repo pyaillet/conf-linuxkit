@@ -29,6 +29,11 @@ services:
      - CAP_SETUID
      - CAP_SETGID
      - CAP_DAC_OVERRIDE
+files:
+  - path: /var/config/ssh/authorized_keys
+    source: ~/.ssh/id_rsa.pub
+    mode: "0600"
+    optional: true
 trust:
   org:
     - linuxkit
