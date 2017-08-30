@@ -171,6 +171,7 @@ update_score() {
     xyprint $SCORE_X $SCORE_Y         "Lines completed: $lines_completed"
     xyprint $SCORE_X $((SCORE_Y + 1)) "Level:           $level"
     xyprint $SCORE_X $((SCORE_Y + 2)) "Score:           $score"
+    xyprint $SCORE_X $((SCORE_Y + 23)) "https://github.com/dkorolev/bash-tetris"
     reset_colors
 }
 
