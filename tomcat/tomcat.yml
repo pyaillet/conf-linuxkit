@@ -11,11 +11,11 @@ onboot:
     command: ["/sbin/dhcpcd", "--nobackground", "-f", "/dhcpcd.conf", "-1"]
 services:
   - name: getty
-    image: linuxkit/getty:58620cff1b0bf8b5d144d087602115e996f18a02
+    image: pyaillet/getty
     env:
      - INSECURE=true
   - name: tomcat
-    image: tomcat:8-alpine
+    image: pyaillet/tomcat-linuxkit
     net: host
 trust:
   org:
