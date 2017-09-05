@@ -7,7 +7,7 @@ init:
   - linuxkit/containerd:7d97282aebe36040fcdd3378a95562d440d34a9d
 services:
   - name: getty
-    image: pyaillet/hello-tetris:latest
+    image: devfest-hello-tetris:latest
     env:
      - INSECURE=true
 trust:

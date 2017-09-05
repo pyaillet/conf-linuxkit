@@ -1,5 +1,5 @@
 #!/bin/sh
 
-docker build -t pyaillet/hello-server .
+docker build -t devfest-hello-server .
 moby build hello-world.yml
-sudo linuxkit run -networking vmnet hello-world 
+sudo linuxkit run -networking vmnet hello-world

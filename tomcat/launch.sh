@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ./buildWar.sh
-docker build -t pyaillet/getty ./getty
-docker build -t pyaillet/tomcat-linuxkit .
+docker build -t devfest-getty ./getty
+docker build -t devfest-tomcat-linuxkit .
 moby build tomcat.yml
-sudo linuxkit run --networking=vmnet tomcat 
+sudo linuxkit run --networking=vmnet tomcat
