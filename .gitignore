@@ -1,4 +1,10 @@
 
 *.raw
+*.img
+*-cmdline
+*-kernel
 
+hello-world/hello-world-state/
 tomcat/tomcat-state/
+
+tetris/hello-tetris-state/
