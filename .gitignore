@@ -8,3 +8,5 @@ hello-world/hello-world-state/
 tomcat/tomcat-state/
 
 tetris/hello-tetris-state/
+
+*.war
