@@ -1,5 +1,5 @@
 #!/bin/sh
 
-docker build -t devfest-hello-server .
+docker build -t devfest-hello-world .
 moby build hello-world.yml
-sudo linuxkit run -networking vmnet hello-world
+linuxkit run hello-world

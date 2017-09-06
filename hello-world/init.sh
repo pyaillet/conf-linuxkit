@@ -17,6 +17,8 @@
 #
 # Author: Kirill Timofeev <kt97679@gmail.com>
 
+sleep 2
+
 set -u # non initialized variable is an error
 
 # 2 signals are used: SIGUSR1 to decrease delay after level up and SIGUSR2 to quit
