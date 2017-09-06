@@ -1,5 +1,5 @@
 #!/bin/sh
 
-docker build -t pyaillet/hello-tetris .
+docker build -t devfest-hello-tetris .
 moby build hello-tetris.yml
 linuxkit run hello-tetris
