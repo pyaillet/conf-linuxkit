@@ -18,6 +18,11 @@
 # Author: Kirill Timofeev <kt97679@gmail.com>
 
 sleep 2
+#
+# This program is free software. It comes without any warranty, to the extent
+# permitted by applicable law. You can redistribute it and/or modify it under
+# the terms of the Do What The Fuck You Want To Public License, Version 2, as
+# published by Sam Hocevar. See http://www.wtfpl.net/ for more details.
 
 set -u # non initialized variable is an error
 
@@ -39,8 +44,8 @@ TOGGLE_HELP=6
 TOGGLE_NEXT=7
 TOGGLE_COLOR=8
 
-DELAY=1          # initial delay between piece movements
-DELAY_FACTOR=0.8 # this value controld delay decrease for each level up
+DELAY=1000          # initial delay between piece movements (milliseconds)
+DELAY_FACTOR="8/10" # this value controld delay decrease for each level up
 
 # color codes
 RED=1
@@ -76,13 +81,13 @@ NEXT_Y=11
 GAMEOVER_X=1
 GAMEOVER_Y=$((PLAYFIELD_H + 3))
 
-# Intervals after which game level (and game speed) is increased 
+# Intervals after which game level (and game speed) is increased
 LEVEL_UP=20
 
 colors=($RED $GREEN $YELLOW $BLUE $FUCHSIA $CYAN $WHITE)
 
-no_color=true    # do we use color or not
-showtime=true    # controller runs while this flag is true
+use_color=1      # 1 if we use color, 0 if not
+showtime=1       # controller runs while this flag is 1
 empty_cell=" ."  # how we draw empty cell
 filled_cell="[]" # how we draw filled cell
 
@@ -112,14 +117,12 @@ hide_cursor() {
 
 # foreground color
 set_fg() {
-    $no_color && return
-    puts "\033[3${1}m"
+    ((use_color)) && puts "\033[3${1}m"
 }
 
 # background color
 set_bg() {
-    $no_color && return
-    puts "\033[4${1}m"
+    ((use_color)) && puts "\033[4${1}m"
 }
 
 reset_colors() {
@@ -130,26 +133,20 @@ set_bold() {
     puts "\033[1m"
 }
 
-# playfield is 1-dimensional array, data is stored as follows:
-# [ a11, a21, ... aX1, a12, a22, ... aX2, ... a1Y, a2Y, ... aXY]
-#   |<  1st line   >|  |<  2nd line   >|  ... |<  last line  >|
-# X is PLAYFIELD_W, Y is PLAYFIELD_H
-# each array element contains cell color value or -1 if cell is empty
+# playfield is an array, each row is represented by integer
+# each cell occupies 3 bits (empty if 0, other values encode color)
 redraw_playfield() {
-    local j i x y xp yp
+    local x y color
 
-    ((xp = PLAYFIELD_X))
     for ((y = 0; y < PLAYFIELD_H; y++)) {
-        ((yp = y + PLAYFIELD_Y))
-        ((i = y * PLAYFIELD_W))
-        xyprint $xp $yp ""
+        xyprint $PLAYFIELD_X $((PLAYFIELD_Y + y)) ""
         for ((x = 0; x < PLAYFIELD_W; x++)) {
-            ((j = i + x))
-            if ((${play_field[$j]} == -1)) ; then
+            ((color = ((playfield[y] >> (x * 3)) & 7)))
+            if ((color == 0)) ; then
                 puts "$empty_cell"
             else
-                set_fg ${play_field[$j]}
-                set_bg ${play_field[$j]}
+                set_fg $color
+                set_bg $color
                 puts "$filled_cell"
                 reset_colors
             fi
@@ -173,14 +170,13 @@ update_score() {
     xyprint $SCORE_X $SCORE_Y         "Lines completed: $lines_completed"
     xyprint $SCORE_X $((SCORE_Y + 1)) "Level:           $level"
     xyprint $SCORE_X $((SCORE_Y + 2)) "Score:           $score"
-    xyprint $SCORE_X $((SCORE_Y + 23)) "https://github.com/dkorolev/bash-tetris"
     reset_colors
 }
 
 help=(
 "  Use cursor keys"
 "       or"
-"      s: up"
+"    s: rotate"
 "a: left,  d: right"
 "    space: drop"
 "      q: quit"
@@ -189,46 +185,57 @@ help=(
 "h: toggle this help"
 )
 
-help_on=-1 # if this flag is 1 help is shown
+help_on=1 # if this flag is 1 help is shown
 
-toggle_help() {
+draw_help() {
     local i s
 
     set_bold
     set_fg $HELP_COLOR
     for ((i = 0; i < ${#help[@]}; i++ )) {
         # ternary assignment: if help_on is 1 use string as is, otherwise substitute all characters with spaces
-        ((help_on == 1)) && s="${help[i]}" || s="${help[i]//?/ }"
+        ((help_on)) && s="${help[i]}" || s="${help[i]//?/ }"
         xyprint $HELP_X $((HELP_Y + i)) "$s"
     }
-    ((help_on = -help_on))
     reset_colors
 }
 
+toggle_help() {
+    ((help_on ^= 1))
+    draw_help
+}
+
 # this array holds all possible pieces that can be used in the game
-# each piece consists of 4 cells
-# each string is sequence of relative xy coordinates for different orientations
+# each piece consists of 4 cells numbered from 0x0 to 0xf:
+# 0123
+# 4567
+# 89ab
+# cdef
+# each string is sequence of cells for different orientations
 # depending on piece symmetry there can be 1, 2 or 4 orientations
-piece=(
-"00011011"                         # square piece
-"0212223210111213"                 # line piece
-"0001111201101120"                 # S piece
-"0102101100101121"                 # Z piece
-"01021121101112220111202100101112" # L piece
-"01112122101112200001112102101112" # inverted L piece
-"01111221101112210110112101101112" # T piece
+# relative coordinates are calculated as follows:
+# x=((cell & 3)); y=((cell >> 2))
+piece_data=(
+"1256"             # square
+"159d4567"         # line
+"45120459"         # s
+"01561548"         # z
+"159a845601592654" # l
+"159804562159a654" # inverted l
+"1456159645694159" # t
 )
 
 draw_piece() {
     # Arguments:
     # 1 - x, 2 - y, 3 - type, 4 - rotation, 5 - cell content
-    local i x y
+    local i x y c
 
     # loop through piece cells: 4 cells, each has 2 coordinates
-    for ((i = 0; i < 8; i += 2)) {
+    for ((i = 0; i < 4; i++)) {
+        c=0x${piece_data[$3]:$((i + $4 * 4)):1}
         # relative coordinates are retrieved based on orientation and added to absolute coordinates
-        ((x = $1 + ${piece[$3]:$((i + $4 * 8 + 1)):1} * 2))
-        ((y = $2 + ${piece[$3]:$((i + $4 * 8)):1}))
+        ((x = $1 + (c & 3) * 2))
+        ((y = $2 + (c >> 2)))
         xyprint $x $y "$5"
     }
 }
@@ -240,27 +247,20 @@ next_piece_color=0
 next_on=1 # if this flag is 1 next piece is shown
 
 draw_next() {
-    # Arguments: 1 - string to draw single cell
-    ((next_on == -1)) && return
-    draw_piece $NEXT_X $NEXT_Y $next_piece $next_piece_rotation "$1"
-}
-
-clear_next() {
-    draw_next "${filled_cell//?/ }"
-}
-
-show_next() {
-    set_fg $next_piece_color
-    set_bg $next_piece_color
-    draw_next "${filled_cell}"
+    # Argument: 1 - visibility (0 - no, 1 - yes), if this argument is skipped $next_on is used
+    local s="$filled_cell" visible=${1:-$next_on}
+    ((visible)) && {
+        set_fg $next_piece_color
+        set_bg $next_piece_color
+    } || {
+        s="${s//?/ }"
+    }
+    draw_piece $NEXT_X $NEXT_Y $next_piece $next_piece_rotation "$s"
     reset_colors
 }
 
 toggle_next() {
-    case $next_on in
-        1) clear_next; next_on=-1 ;;
-        -1) next_on=1; show_next ;;
-    esac
+    draw_next $((next_on ^= 1))
 }
 
 draw_current() {
@@ -283,13 +283,15 @@ clear_current() {
 new_piece_location_ok() {
     # Arguments: 1 - new x coordinate of the piece, 2 - new y coordinate of the piece
     # test if piece can be moved to new location
-    local j i x y x_test=$1 y_test=$2
+    local i c x y x_test=$1 y_test=$2
 
-    for ((j = 0, i = 1; j < 8; j += 2, i = j + 1)) {
-        ((y = ${piece[$current_piece]:$((j + current_piece_rotation * 8)):1} + y_test)) # new y coordinate of piece cell
-        ((x = ${piece[$current_piece]:$((i + current_piece_rotation * 8)):1} + x_test)) # new x coordinate of piece cell
-        ((y < 0 || y >= PLAYFIELD_H || x < 0 || x >= PLAYFIELD_W )) && return 1         # check if we are out of the play field
-        ((${play_field[y * PLAYFIELD_W + x]} != -1 )) && return 1                       # check if location is already ocupied
+    for ((i = 0; i < 4; i++)) {
+        c=0x${piece_data[$current_piece]:$((i + current_piece_rotation * 4)):1}
+        # new x and y coordinates of piece cell
+        ((y = (c >> 2) + y_test))
+        ((x = (c & 3) + x_test))
+        ((y < 0 || y >= PLAYFIELD_H || x < 0 || x >= PLAYFIELD_W )) && return 1 # check if we are out of the play field
+        ((((playfield[y] >> (x * 3)) & 7) != 0 )) && return 1                  # check if location is already ocupied
     }
     return 0
 }
@@ -306,12 +308,12 @@ get_random_next() {
     new_piece_location_ok $current_piece_x $current_piece_y || cmd_quit
     show_current
 
-    clear_next
+    draw_next 0
     # now let's get next piece
-    ((next_piece = RANDOM % ${#piece[@]}))
-    ((next_piece_rotation = RANDOM % (${#piece[$next_piece]} / 8)))
-    ((next_piece_color = RANDOM % ${#colors[@]}))
-    show_next
+    ((next_piece = RANDOM % ${#piece_data[@]}))
+    ((next_piece_rotation = RANDOM % (${#piece_data[$next_piece]} / 4)))
+    ((next_piece_color = colors[RANDOM % ${#colors[@]}]))
+    draw_next
 }
 
 draw_border() {
@@ -336,30 +338,33 @@ draw_border() {
     reset_colors
 }
 
-toggle_color() {
-    $no_color && no_color=false || no_color=true
-    show_next
+redraw_screen() {
+    draw_next
     update_score 0
-    toggle_help
-    toggle_help
+    draw_help
     draw_border
     redraw_playfield
     show_current
 }
 
+toggle_color() {
+    ((use_color ^= 1))
+    redraw_screen
+}
+
 init() {
-    local i x1 x2 y
+    local i
 
     # playfield is initialized with -1s (empty cells)
-    for ((i = 0; i < PLAYFIELD_H * PLAYFIELD_W; i++)) {
-        play_field[$i]=-1
+    for ((i = 0; i < PLAYFIELD_H; i++)) {
+        playfield[$i]=0
     }
 
     clear
     hide_cursor
     get_random_next
     get_random_next
-    toggle_color
+    redraw_screen
 }
 
 # this function runs in separate process
@@ -368,9 +373,9 @@ ticker() {
     # on SIGUSR2 this process should exit
     trap exit SIGUSR2
     # on SIGUSR1 delay should be decreased, this happens during level ups
-    trap 'DELAY=$(awk "BEGIN {print $DELAY * $DELAY_FACTOR}")' SIGUSR1
+    trap 'DELAY=$(($DELAY * $DELAY_FACTOR))' SIGUSR1
 
-    while true ; do echo -n $DOWN; sleep $DELAY; done
+    while true ; do echo -n $DOWN; sleep $((DELAY / 1000)).$((DELAY % 1000)); done
 }
 
 # this function processes keyboard input
@@ -395,35 +400,37 @@ reader() {
     done
 }
 
-# this function updates occupied cells in play_field array after piece is dropped
+# this function updates occupied cells in playfield array after piece is dropped
 flatten_playfield() {
-    local i j k x y
-    for ((i = 0, j = 1; i < 8; i += 2, j += 2)) {
-        ((y = ${piece[$current_piece]:$((i + current_piece_rotation * 8)):1} + current_piece_y))
-        ((x = ${piece[$current_piece]:$((j + current_piece_rotation * 8)):1} + current_piece_x))
-        ((k = y * PLAYFIELD_W + x))
-        play_field[$k]=$current_piece_color
+    local i c x y
+    for ((i = 0; i < 4; i++)) {
+        c=0x${piece_data[$current_piece]:$((i + current_piece_rotation * 4)):1}
+        ((y = (c >> 2) + current_piece_y))
+        ((x = (c & 3) + current_piece_x))
+        ((playfield[y] |= (current_piece_color << (x * 3))))
     }
 }
 
-# this function goes through play_field array and eliminates lines without empty sells
+# this function takes row number as argument and checks if has empty cells
+line_full() {
+    local row=${playfield[$1]} x
+    for ((x = 0; x < PLAYFIELD_W; x++)) {
+        ((((row >> (x * 3)) & 7) == 0)) && return 1
+    }
+    return 0
+}
+
+# this function goes through playfield array and eliminates lines without empty cells
 process_complete_lines() {
-    local j i complete_lines
-    ((complete_lines = 0))
-    for ((j = 0; j < PLAYFIELD_W * PLAYFIELD_H; j += PLAYFIELD_W)) {
-        for ((i = j + PLAYFIELD_W - 1; i >= j; i--)) {
-            ((${play_field[$i]} == -1)) && break # empty cell found
+    local y complete_lines=0
+    for ((y = PLAYFIELD_H - 1; y > -1; y--)) {
+        line_full $y && {
+            unset playfield[$y]
+            ((complete_lines++))
         }
-        ((i >= j)) && continue # previous loop was interrupted because empty cell was found
-        ((complete_lines++))
-        # move lines down
-        for ((i = j - 1; i >= 0; i--)) {
-            play_field[$((i + PLAYFIELD_W))]=${play_field[$i]}
-        }
-        # mark cells as free
-        for ((i = 0; i < PLAYFIELD_W; i++)) {
-            play_field[$i]=-1
-        }
+    }
+    for ((y = 0; y < complete_lines; y++)) {
+        playfield=(0 ${playfield[@]})
     }
     return $complete_lines
 }
@@ -462,7 +469,7 @@ cmd_left() {
 cmd_rotate() {
     local available_rotations old_rotation new_rotation
 
-    available_rotations=$((${#piece[$current_piece]} / 8))            # number of orientations for this piece
+    available_rotations=$((${#piece_data[$current_piece]} / 4))       # number of orientations for this piece
     old_rotation=$current_piece_rotation                              # preserve current orientation
     new_rotation=$(((old_rotation + 1) % available_rotations))        # calculate new orientation
     current_piece_rotation=$new_rotation                              # set orientation to new
@@ -490,7 +497,7 @@ cmd_drop() {
 }
 
 cmd_quit() {
-    showtime=false                               # let's stop controller ...
+    showtime=-1                                  # let's stop controller ...
     pkill -SIGUSR2 -f "/bin/bash $0" # ... send SIGUSR2 to all script instances to stop forked processes ...
     xyprint $GAMEOVER_X $GAMEOVER_Y "Game over!"
     echo -e "$screen_buffer"                     # ... and print final message
@@ -515,7 +522,7 @@ controller() {
 
     init
 
-    while $showtime; do           # run while showtime variable is true, it is changed to false in cmd_quit function
+    while ((showtime == 1)) ; do  # run while showtime variable is 1, it is changed to -1 in cmd_quit function
         echo -ne "$screen_buffer" # output screen buffer ...
         screen_buffer=""          # ... and reset it
         read -s -n 1 cmd          # read next command from stdout
@@ -523,7 +530,7 @@ controller() {
     done
 }
 
-stty_g=`stty -g` # let's save terminal state
+stty_g=$(stty -g) # let's save terminal state
 
 # output of ticker and reader is joined and piped into controller
 (
