@@ -1,7 +1,12 @@
 .PHONY: clean build run
 
-build:
+devfest-tomcat:
 	$(MAKE) -C devfest-tomcat build
+
+devfest-getty:
+	$(MAKE) -C getty build
+
+build: devfest-getty devfest-tomcat
 	moby build -disable-content-trust=true tomcat-os.yml
 
 run: build
