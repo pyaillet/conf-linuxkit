@@ -4,9 +4,8 @@
 *-cmdline
 *-kernel
 
-hello-world/hello-world-state/
-tomcat/tomcat-state/
+hello-world/hello-world-os-state/
+tomcat/tomcat-os-state/
 
-tetris/hello-tetris-state/
 
 *.war
