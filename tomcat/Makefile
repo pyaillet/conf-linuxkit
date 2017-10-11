@@ -1,4 +1,6 @@
-.PHONY: clean build run
+.PHONY: clean build run devfest-tomcat devfest-getty
+
+default: run
 
 devfest-tomcat:
 	$(MAKE) -C devfest-tomcat build
