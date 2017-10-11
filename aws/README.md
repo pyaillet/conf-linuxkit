@@ -1,6 +1,6 @@
-# AWS 
+# AWS
 
-Look inside ``aws-prep``` to prepare your machine:
+Look inside ``aws-prep``` to prepare your machine (we use it on a ubuntu vm):
  1- install linuxkit, moby tool
  2- setup aws
 
