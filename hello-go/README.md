@@ -1,7 +1,7 @@
-# First example: Hello world server
+# First example: Hello world go server
 
 ‘
-./launch.sh
+make run
 ‘
 
 And inside the VM:
