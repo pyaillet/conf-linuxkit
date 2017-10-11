@@ -11,11 +11,11 @@ onboot:
     command: ["/sbin/dhcpcd", "--nobackground", "-f", "/dhcpcd.conf", "-1"]
 services:
   - name: getty
-    image: devfest-linuxkit/getty:0b751beece130c13050f89ec3ee2d5235a08f2d2-dirty-amd64
+    image: devfest-linuxkit/getty:6c8de371697406204c81c6f1f48fe30d1db211dd-amd64
     env:
      - INSECURE=true
   - name: tomcat
-    image: devfest-linuxkit/devfest-tomcat:eed5db36f67dc4fb32c90f99e063c59c2c2fcccb-dirty-amd64
+    image: devfest-linuxkit/devfest-tomcat:7d6f422e1c73cbea549bb77b7884ef31b2432a1c-amd64
     net: host
 trust:
   org:
