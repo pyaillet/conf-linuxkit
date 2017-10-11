@@ -1,2 +1,2 @@
-image: devfest-tomcat
+image: devfest-nginx
 org: devfest-linuxkit
