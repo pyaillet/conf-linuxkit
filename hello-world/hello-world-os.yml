@@ -7,7 +7,7 @@ init:
   - linuxkit/containerd:417f83f7b8dc1fa36acf90effe44f99c7397480a
 services:
   - name: getty
-    image: devfest-linuxkit/devfest-hello-world:9349b54abffdb6ae58b45b773d4e24eaf2f704b5-amd64
+    image: devfest-linuxkit/devfest-hello-world:e3ccd2c68c882c448fdb5aaf211dfeba1b37eac5-amd64
     env:
      - INSECURE=true
 trust:

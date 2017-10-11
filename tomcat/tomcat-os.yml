@@ -15,7 +15,7 @@ services:
     env:
      - INSECURE=true
   - name: tomcat
-    image: devfest-linuxkit/devfest-tomcat:a03c94c031e58fe23c3f8374cc32a925de1d843c-amd64
+    image: devfest-linuxkit/devfest-tomcat:eed5db36f67dc4fb32c90f99e063c59c2c2fcccb-amd64
     net: host
 trust:
   org:
