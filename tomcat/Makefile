@@ -1,12 +1,12 @@
-.PHONY: clean build run devfest-tomcat devfest-getty
+.PHONY: clean build run lkt-tomcat lkt-getty
 
-devfest-tomcat:
-	$(MAKE) -C devfest-tomcat build
+lkt-tomcat:
+	$(MAKE) -C lkt-tomcat build
 
-devfest-getty:
+lkt-getty:
 	$(MAKE) -C getty build
 
-build: devfest-getty devfest-tomcat
+build: lkt-getty lkt-tomcat
 	moby build -disable-content-trust=true tomcat-os.yml
 
 run: build

@@ -8,7 +8,7 @@
             "s3:GetBucketLocation"
          ],
          "Resource": [
-            "arn:aws:s3:::devfest-linuxkit"
+            "arn:aws:s3:::linuxkit"
          ]
       },
       {
@@ -17,7 +17,7 @@
             "s3:GetObject"
          ],
          "Resource": [
-            "arn:aws:s3:::devfest-linuxkit/*"
+            "arn:aws:s3:::linuxkit/*"
          ]
       },
       {

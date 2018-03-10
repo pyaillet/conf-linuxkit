@@ -1,2 +1,2 @@
-image: devfest-nginx
-org: devfest-linuxkit
+image: lkt-nginx
+org: conf-linuxkit
