@@ -15,7 +15,7 @@ services:
     env:
      - INSECURE=true
   - name: hello-server
-    image: devfest-linuxkit/devfest-hello-go:da8b46a091590e84039541c09e48e2b6767b7bd6-amd64
+    image: conf-linuxkit/lkt-hello-go:da8b46a091590e84039541c09e48e2b6767b7bd6-amd64
     net: host
 trust:
   org:

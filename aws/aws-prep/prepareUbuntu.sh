@@ -2,13 +2,13 @@
 
 sudo add-apt-repository ppa:longsleep/golang-backports
 sudo apt-get update
-sudo apt-get install golang-go
+sudo apt-get install golang-go awscli
 
-sudo apt-get install docker.io
+# sudo apt-get install docker.io
 
-sudo usermod -aG docker ubuntu
-newgrp docker
-newgrp ubuntu
+# sudo usermod -aG docker ubuntu
+# newgrp docker
+# newgrp ubuntu
 
 cd /home/ubuntu
 git clone http://github.com/linuxkit/linuxkit

@@ -1,2 +1,2 @@
-image: devfest-tomcat
-org: devfest-linuxkit
+image: lkt-tomcat
+org: conf-linuxkit

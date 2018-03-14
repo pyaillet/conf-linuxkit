@@ -1,7 +1,7 @@
 .PHONY: clean build run
 
 build:
-	$(MAKE) -C devfest-hello-world build
+	$(MAKE) -C lkt-hello-world build
 	moby build -disable-content-trust=true hello-world-os.yml
 
 run: build

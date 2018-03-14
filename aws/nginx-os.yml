@@ -11,7 +11,7 @@ onboot:
     command: ["/sbin/dhcpcd", "--nobackground", "-f", "/dhcpcd.conf", "-1"]
 services:
   - name: nginx
-    image: devfest-linuxkit/devfest-nginx:ba5d97f9ff05d9b618a6e2d602a5b21c8938967c-amd64
+    image: conf-linuxkit/lkt-nginx:ba5d97f9ff05d9b618a6e2d602a5b21c8938967c-amd64
     capabilities:
      - CAP_NET_BIND_SERVICE
      - CAP_CHOWN

@@ -1,2 +1,2 @@
-image: devfest-hello-go
-org: devfest-linuxkit
+image: lkt-hello-go
+org: conf-linuxkit

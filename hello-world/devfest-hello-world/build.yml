@@ -1,2 +1,2 @@
-image: devfest-hello-world
-org: devfest-linuxkit
+image: lkt-hello-world
+org: conf-linuxkit
