@@ -11,7 +11,7 @@ onboot:
     command: ["/sbin/dhcpcd", "--nobackground", "-f", "/dhcpcd.conf", "-1"]
 services:
   - name: getty
-    image: conf-linuxkit/getty:5cff325843fbc1f763051bb4c3ec82fa1a47c34b-amd64
+    image: conf-linuxkit/getty:9654f2f5b0f201d64158d8d0d2dee722183c28fbcd-amd64
     env:
      - INSECURE=true
   - name: tomcat
