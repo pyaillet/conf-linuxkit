@@ -7,7 +7,7 @@ init:
   - linuxkit/containerd:eaf0d615cfceb9d854408dd3c80429ee8ac4d051
 services:
   - name: getty
-    image: conf-linuxkit/lkt-hello-world:394986a71ba1f413a86d1202327584a3356e23cf-amd64
+    image: conf-linuxkit/lkt-hello-world:361b16111af6053051e35074f8cbc9fe60c82adc-amd64
     env:
      - INSECURE=true
 trust:
