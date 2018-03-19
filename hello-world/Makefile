@@ -2,7 +2,7 @@
 
 build:
 	$(MAKE) -C lkt-hello-world build
-	moby build -disable-content-trust=true hello-world-os.yml
+	linuxkit build hello-world-os.yml
 
 run: build
 	linuxkit run hello-world-os

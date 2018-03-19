@@ -7,7 +7,7 @@ lkt-getty:
 	$(MAKE) -C getty build
 
 build: lkt-getty lkt-tomcat
-	moby build -disable-content-trust=true tomcat-os.yml
+	linuxkit build tomcat-os.yml
 
 run: build
 	sudo linuxkit run -networking=vmnet tomcat-os

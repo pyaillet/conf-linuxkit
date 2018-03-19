@@ -4,7 +4,7 @@ default: run
 
 build:
 	$(MAKE) -C go build
-	moby build -disable-content-trust=true hello-go-os.yml
+	linuxkit build hello-go-os.yml
 
 run: build
 	linuxkit run hello-go-os

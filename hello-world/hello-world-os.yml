@@ -1,13 +1,13 @@
 kernel:
-  image: linuxkit/kernel:4.9.54
+  image: linuxkit/kernel:4.14.27
   cmdline: "console=tty0 console=ttyS0 console=ttyAMA0"
 init:
-  - linuxkit/init:98e95fb67e8afcf02c09ba927e4b357fec42977a
-  - linuxkit/runc:991ef358ad8fc1111d64f4d8071f2009cc561f6a
-  - linuxkit/containerd:eaf0d615cfceb9d854408dd3c80429ee8ac4d051
+  - linuxkit/init:b212cfeb4bb6330e0a7547d8010fe2e8489b677a
+  - linuxkit/runc:7c39a68490a12cde830e1922f171c451fb08e731
+  - linuxkit/containerd:37e397ebfc6bd5d8e18695b121166ffd0cbfd9f0
 services:
   - name: getty
-    image: conf-linuxkit/lkt-hello-world:394986a71ba1f413a86d1202327584a3356e23cf-amd64
+    image: conf-linuxkit/lkt-hello-world:0d8e9e6ea60c3423f7d676c389cf52a1450e4b53-amd64
     env:
      - INSECURE=true
 trust:
