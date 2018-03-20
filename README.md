@@ -22,3 +22,7 @@ A simple os with a custom shell 🐚
 ## tomcat
 
 A simple os image with only a tomcat serving our custom content
+
+## rpi3
+
+This one needs to be built on a rpi3 with an aarch64 distribution and docker installed. You can find one [here](https://github.com/DieterReuter/image-builder-rpi64/releases/latest).
