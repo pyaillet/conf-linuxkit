@@ -4,13 +4,13 @@ default: run
 
 build:
 	$(MAKE) -C nginx build
-	linuxkit build -format raw-bios -size 128M nginx-os.yml
+	linuxkit build -format gcp nginx-os.yml
 
 push: build
-	linuxkit push aws -bucket devfest-linuxkit -timeout 1200 nginx-os.raw
+	linuxkit push gcp -project k8s-hw-1 -bucket conf-linuxkit nginx-os.img.tar.gz
 
 run:
-	linuxkit run aws nginx-os 
+	linuxkit run gcp -project k8s-hw-1 nginx-os 
 
 clean:
-	rm -Rf nginx-os.raw
+	rm -Rf nginx-os.img.tar.gz
