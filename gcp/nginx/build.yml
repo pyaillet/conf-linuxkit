@@ -1,2 +1,2 @@
-image: lkt-nginx
+image: lkt-nginx-gcp
 org: conf-linuxkit

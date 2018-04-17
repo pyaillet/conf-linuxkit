@@ -1,21 +1,21 @@
 kernel:
-  image: linuxkit/kernel:4.9.54
+  image: linuxkit/kernel:4.14.34
   cmdline: "console=tty0 console=ttyS0 console=ttyAMA0"
 init:
-  - linuxkit/init:98e95fb67e8afcf02c09ba927e4b357fec42977a
-  - linuxkit/runc:991ef358ad8fc1111d64f4d8071f2009cc561f6a
-  - linuxkit/containerd:eaf0d615cfceb9d854408dd3c80429ee8ac4d051
+  - linuxkit/init:v0.3
+  - linuxkit/runc:v0.3
+  - linuxkit/containerd:v0.3
 onboot:
   - name: dhcpcd
-    image: linuxkit/dhcpcd:aa685261ceb2557990dcfe9dd8824c6b9ec416e2
+    image: linuxkit/dhcpcd:v0.3
     command: ["/sbin/dhcpcd", "--nobackground", "-f", "/dhcpcd.conf", "-1"]
 services:
   - name: getty
-    image: linuxkit/getty:7abaf7b276c59f80891d92e9279e3e3ee8e2f512
+    image: linuxkit/getty:v0.3
     env:
      - INSECURE=true
   - name: hello-server
-    image: conf-linuxkit/lkt-hello-go:da8b46a091590e84039541c09e48e2b6767b7bd6-amd64
+    image: conf-linuxkit/lkt-hello-go:v0.1
     net: host
 trust:
   org:
