@@ -1,13 +1,15 @@
 # Tomcat
 
-Build:
-```make build````
+## Build
+```make build```
 
-Run:
-```make````
+## Run
 
-Clean:
-```make clean````
+```make```
+
+## Clean 
+
+```make clean```
 
 Run & Clean launch commands with sudo, because our tomcat os binds on the host
 network and needs to be run as root.
