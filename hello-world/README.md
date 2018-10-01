@@ -1,12 +1,12 @@
 # Hello world image os
 
-Run:
+## Run
 ```make```
 
-Build:
-```make build````
+## Build
+```make build```
 
-Clean:
+## Clean
 ```make clean```
 
 Just wait for the machine to boot and... 🎉 SURPRISE 🎉 
