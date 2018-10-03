@@ -1,34 +1,34 @@
 kernel:
-  image: linuxkit/kernel:4.14.34
+  image: linuxkit/kernel:4.14.73
   cmdline: "console=tty0 console=ttyS0 console=ttyAMA0"
 init:
-  - linuxkit/init:v0.3
-  - linuxkit/runc:v0.3
-  - linuxkit/containerd:v0.3
-  - linuxkit/ca-certificates:v0.3
+  - linuxkit/init:v0.6
+  - linuxkit/runc:v0.6
+  - linuxkit/containerd:v0.6
+  - linuxkit/ca-certificates:v0.6
 onboot:
   - name: sysctl
-    image: linuxkit/sysctl:v0.3
+    image: linuxkit/sysctl:v0.6
   - name: rngd1
-    image: linuxkit/rngd:v0.3
+    image: linuxkit/rngd:v0.6
     command: ["/sbin/rngd", "-1"]
   - name: netdev
-    image: linuxkit/modprobe:v0.3
+    image: linuxkit/modprobe:v0.6
     command: ["modprobe", "smsc95xx"]
   - name: dhcpcd
-    image: linuxkit/dhcpcd:v0.3
+    image: linuxkit/dhcpcd:v0.6
     command: ["/sbin/dhcpcd", "--nobackground", "-f", "/dhcpcd.conf", "-1"]
 services:
   - name: getty
-    image: linuxkit/getty:v0.3
+    image: linuxkit/getty:v0.6
     env:
      - INSECURE=true
   - name: rngd
-    image: linuxkit/rngd:v0.3
+    image: linuxkit/rngd:v0.6
   - name: dhcpcd
-    image: linuxkit/dhcpcd:v0.3
+    image: linuxkit/dhcpcd:v0.6
   - name: sshd
-    image: linuxkit/sshd:v0.3
+    image: linuxkit/sshd:v0.6
   - name: server
     image: conf-linuxkit/lkt-server-rpi3:v0.1
 files:

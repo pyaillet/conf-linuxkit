@@ -1,10 +1,10 @@
 kernel:
-  image: linuxkit/kernel:4.14.34
+  image: linuxkit/kernel:4.14.73
   cmdline: "console=tty0 console=ttyS0 console=ttyAMA0"
 init:
-  - linuxkit/init:v0.3
-  - linuxkit/runc:v0.3
-  - linuxkit/containerd:v0.3
+  - linuxkit/init:v0.6
+  - linuxkit/runc:v0.6
+  - linuxkit/containerd:v0.6
 services:
   - name: getty
     image: conf-linuxkit/lkt-hello-world:v0.1
