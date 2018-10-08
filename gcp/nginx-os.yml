@@ -6,6 +6,9 @@ init:
   - linuxkit/runc:v0.6
   - linuxkit/containerd:v0.6
 onboot:
+  - name: rngd1
+    image: linuxkit/rngd:v0.6
+    command: ["rngd", "-1"]
   - name: dhcpcd
     image: linuxkit/dhcpcd:v0.6
     command: ["/sbin/dhcpcd", "--nobackground", "-f", "/dhcpcd.conf", "-1"]
