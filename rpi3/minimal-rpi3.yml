@@ -30,7 +30,7 @@ services:
   - name: sshd
     image: linuxkit/sshd:v0.6
   - name: server
-    image: conf-linuxkit/lkt-server-rpi3:v0.1
+    image: pyaillet/lkt-server-rpi3:v0.1
 files:
   - path: root/.ssh/authorized_keys
     source: ./id_rsa.pub

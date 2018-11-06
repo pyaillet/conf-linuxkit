@@ -15,7 +15,7 @@ services:
     env:
      - INSECURE=true
   - name: hello-server
-    image: conf-linuxkit/lkt-hello-go:v0.1
+    image: pyaillet/lkt-hello-go:v0.1
     net: host
 trust:
   org:
